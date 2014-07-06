@@ -2,13 +2,17 @@
 
 namespace FSharpExt
 
-module Heap =
-    type HeapNode<'a, 'b when 'a : comparison> = 
-        | Full of 'a * 'b * HeapNode<'a, 'b> * HeapNode<'a, 'b>
-        | Half of 'a * 'b * HeapNode<'a, 'b>
-        | Leaf of 'a * 'b
-        | Empty
-        
+type HeapNode<'a, 'b when 'a : comparison> = 
+    | Full of 'a * 'b * HeapNode<'a, 'b> * HeapNode<'a, 'b>
+    | Half of 'a * 'b * HeapNode<'a, 'b>
+    | Leaf of 'a * 'b
+    | Empty
+type Direction = Left | Right
+type Pointer = Direction list
+type Zipper<'a, 'b when 'a : comparison> = Zipper of HeapNode<'a, 'b> * (HeapNode<'a, 'b> * Direction) list
+type Heap<'a, 'b when 'a : comparison> = Heap of Zipper<'a, 'b> * Pointer
+
+module Heap =    
     let (|KeyValue|) zipper =
         match zipper with
         | Full(k, v, _, _) | Half(k, v, _) | Leaf(k, v) -> (k, v)
@@ -19,9 +23,6 @@ module Heap =
         | Leaf(k, v)          -> Empty
         | Half(k, v, _)       -> Leaf(k, v)
         | Full(k, v, left, _) -> Half(k, v, left)
-
-    type Direction = Left | Right
-    type Pointer = Direction list
 
     let rec next pointer =
         match pointer with
@@ -34,8 +35,6 @@ module Heap =
         | [Left]                 -> []
         | x :: xs when x = Right -> Left :: xs
         | x :: xs                -> Right :: previous xs
-
-    type Zipper<'a, 'b when 'a : comparison> = Zipper of HeapNode<'a, 'b> * (HeapNode<'a, 'b> * Direction) list 
 
     let moveLeftZipper (Zipper((Full(_, _, left, _) | Half(_, _, left)) as node, path)) = Zipper(left, (node, Left) :: path)
 
@@ -98,11 +97,12 @@ module Heap =
     let bubbleUp (zipper, pointer) = (bubbleUpZipper zipper, pointer)
     let bubbleDown (zipper, pointer) = (bubbleDownZipper zipper, pointer)
 
-    type Heap<'a, 'b when 'a : comparison> = Heap of Zipper<'a, 'b> * Pointer
     let (|Root|) (Heap(Zipper(root, _), _)) = root
 
     let insert (k, v) (Heap(zipper, pointer)) = appendLeaf (k, v) (zipper, pointer) |> bubbleUp |> toRoot |> Heap
+
     let min (Heap(zipper, pointer)) = keyValue zipper
+
     let remove (Heap(zipper, pointer)) = 
         (modifyCurrentZipper (moveAlongPathZipper (previous pointer) zipper |> keyValue) zipper, pointer) 
         |> removeLeaf 
@@ -110,7 +110,9 @@ module Heap =
         |> bubbleDown 
         |> toRoot 
         |> Heap
+
     let pop heap = (min heap, remove heap)
+
     let tryPop heap =
         match heap with
         | Root(Empty) -> None
@@ -125,12 +127,14 @@ module Heap =
         | []            -> empty
         | first :: tail -> List.fold (fun h x -> insert x h) (singleton first) tail
 
-    let ofValues list fn =
-        match list with
-        | []            -> empty
-        | first :: tail -> List.fold (fun h x -> insert (fn x, x) h) (singleton (fn first, first)) tail
+    let ofValues list fn = List.map (fun x -> (fn x, x)) list |> ofList
 
     let sort list = ofValues list id |> Seq.unfold tryPop |> Seq.map snd |> List.ofSeq
+
+    let isEmpty (Heap(Zipper(current, _), _)) =
+        match current with
+        | Empty -> true
+        | _     -> false
 
     let debugPrint (Heap(Zipper(current, path), pointer)) =
         let depth = List.length pointer

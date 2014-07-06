@@ -45,7 +45,10 @@
     <Compile Include="List.fs" />
     <None Include="Script.fsx" />
     <Compile Include="Func.fs" />
+    <Compile Include="Heap.fsi" />
     <Compile Include="Heap.fs" />
+    <Compile Include="PriorityQueue.fsi" />
+    <Compile Include="PriorityQueue.fs" />
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
