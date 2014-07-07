@@ -7,6 +7,5 @@ open FSharpExt
 let main argv = 
     let rand = System.Random()
     let shuffled = List.init 100000 (fun _ -> rand.Next())
-    let sorted = PriorityQueue.ofList shuffled
-    printfn "%d" (PriorityQueue.peek sorted)
+    let sorted = Heap.sort shuffled
     0 // return an integer exit code

@@ -83,9 +83,9 @@ module Heap =
         | _                                         -> zipper 
 
     let rec bubbleDownZipper (Zipper(current, _) as zipper) =
-        let move fn (ak, av) (bk, bv) = modifyCurrentZipper (bk, bv) zipper |> fn |> modifyCurrentZipper (ak, av) |> bubbleDownZipper
-        let right = move moveRightZipper
-        let left = move moveLeftZipper
+        let inline move fn (ak, av) (bk, bv) = modifyCurrentZipper (bk, bv) zipper |> fn |> modifyCurrentZipper (ak, av) |> bubbleDownZipper
+        let inline right x y = move moveRightZipper x y
+        let inline left x y = move moveLeftZipper x y
         match current with
         | Full(k, v, KeyValue(lk, lv), KeyValue(rk, rv)) when k > lk || k > rk -> if lk > rk then right (k, v) (rk, rv) else left (k, v) (lk, lv)
         | Half(k, v, KeyValue(lk, lv)) when k > lk                             -> left (k, v) (lk, lv)
