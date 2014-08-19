@@ -15,3 +15,7 @@ module List =
         | _, _  -> drop (n - 1) (List.tail list)
 
     let splitAt n list = (take n list, drop n list)
+
+    let singleton x = [x]
+
+    let concatMap fn list = List.map fn list |> List.concat

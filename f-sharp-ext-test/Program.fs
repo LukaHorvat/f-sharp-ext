@@ -5,7 +5,6 @@ open FSharpExt
 
 [<EntryPoint>]
 let main argv = 
-    let rand = System.Random()
-    let shuffled = List.init 100000 (fun _ -> rand.Next())
-    let sorted = Heap.sort shuffled
+    let sorted = Heap.sort [100000..-1..1]
+    printfn "%A" sorted
     0 // return an integer exit code
