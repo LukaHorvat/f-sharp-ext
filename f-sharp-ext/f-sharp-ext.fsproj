@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="List.fs" />
+    <Compile Include="Map.fs" />
     <Compile Include="Func.fs" />
     <Compile Include="Heap.fsi" />
     <Compile Include="Heap.fs" />
