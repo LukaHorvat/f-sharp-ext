@@ -42,9 +42,10 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="List.fs" />
     <Compile Include="Map.fs" />
     <Compile Include="Func.fs" />
+    <Compile Include="Seq.fs" />
+    <Compile Include="List.fs" />
     <Compile Include="Heap.fsi" />
     <Compile Include="Heap.fs" />
     <Compile Include="PriorityQueue.fsi" />
@@ -53,6 +54,13 @@
     <Compile Include="Queue.fs" />
     <Compile Include="Zipper.fsi" />
     <Compile Include="Zipper.fs" />
+    <Compile Include="Parse.fs" />
+    <Compile Include="StateParse.fs" />
+    <Compile Include="Operators.fs" />
+    <Compile Include="Debug.fs" />
+    <Compile Include="Numerals.fs" />
+    <Compile Include="LengthList.fs" />
+    <Compile Include="Matrix.fs" />
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
